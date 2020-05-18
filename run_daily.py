@@ -13,7 +13,7 @@ yesterday = today - dt.timedelta(days = 1) # will count/collect posts after 00:0
 submissions = daily.get_dailysubmissions("TheRedPill")
 
 # Save data as .json
-os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing Institute/trpred/data/raw/submissions")# change wd
+os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing_Institute/trpred/data/raw/submissions")# change wd
 filename = "dailysubmissions-" + str(yesterday) + ".json" # create filename
 
 with open(filename, 'w', encoding='utf-8') as f: # write file
@@ -24,7 +24,7 @@ with open(filename, 'w', encoding='utf-8') as f: # write file
 comments = daily.get_dailycomments("TheRedPill", today, yesterday)
 
 # Save data as .json
-os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing Institute/trpred/data/raw/comments")# change wd
+os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing_Institute/trpred/data/raw/comments")# change wd
 filename = "dailycomments-" + str(yesterday) + ".json" # create filename
 
 comments.to_json(filename)

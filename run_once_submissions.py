@@ -18,7 +18,7 @@ submissions = all.crawl_subreddit("TheRedPill")
 
 # Save data as .json
 
-os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing Institute/trpred/data/raw/submissions") # change wd
+os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing_Institute/trpred/data/raw/submissions") # change wd
 filename = "submissions-" + str(today) + ".json" # create filename
 
 with open(filename, 'w', encoding='utf-8') as f: # write file
