@@ -75,8 +75,8 @@ def get_dailycomments(subreddit, before, after, max_comments = 10000000):
 
     # Using psaw package to access comments
     gen = api.search_comments(subreddit = subreddit,\
-                              before = today,\
-                             after = yesterday)
+                              before = before,\
+                             after = after)
 
     # Create empty container for comments
     comments = []

@@ -8,7 +8,7 @@ import datetime as dt
 from psaw import PushshiftAPI # https://github.com/dmarx/psaw
 
 ## Submissions
-def crawl_page(subreddit: str, last_posttime = None):
+def get_pages(subreddit: str, last_posttime = None):
     """Crawl a page of results from a given subreddit.
     :param subreddit: The subreddit to crawl.
     :param last_page: The last downloaded page.
@@ -17,7 +17,7 @@ def crawl_page(subreddit: str, last_posttime = None):
 
     url = "https://api.pushshift.io/reddit/search/submission"
 
-    params = {"subreddit": subreddit,\
+    queries = {"subreddit": subreddit,\
                "size": 500,\
                "sort": "desc",\
                "sort_type": "created_utc"}
@@ -26,7 +26,7 @@ def crawl_page(subreddit: str, last_posttime = None):
     if last_posttime is not None:
         queries["before"] = last_posttime
 
-    results = requests.get(url, params)
+    results = requests.get(url, queries)
 
     if not results.ok:
         # something wrong happened
@@ -57,7 +57,7 @@ def crawl_subreddit(subreddit, max_submissions = 200000):
     return all_submissions[:max_submissions]
 
 ## Comments
-def crawl_comments(subreddit, max_comments = 10000000):
+def crawl_comments(subreddit, before = None, after = None, max_comments = None):
     """Crawl comments from a subreddit
     :param subreddit: The subreddit to crawl.
     :param max_submissions: The max number of comments to download.
@@ -65,25 +65,43 @@ def crawl_comments(subreddit, max_comments = 10000000):
 
     api = PushshiftAPI()
 
-    gen = api.search_comments(subreddit = subreddit)
+    if before is None and after is None:
+        gen = api.search_comments(subreddit = subreddit)
+    else:
+        gen = api.search_comments(subreddit = subreddit,
+                                 before = before,
+                                 after = after)
 
     comments = []
 
+    today = dt.datetime.utcnow().date()
+    filename = "data/raw/comments/" + "allcomments-asof-" + str(today) + ".csv" # create filename
+
+    counter = 0
+
     for c in gen:
         comments.append(c)
+        counter += 1
 
-        if len(comments) % 10000 == 0:
-            print(len(comments))
+        if counter % 10000 == 0:
+            df = pd.DataFrame([obj.d_ for obj in comments])
+            df.to_csv(filename, index = False, mode = "a")
+            print(counter)
+
+        # if len(comments) % 10000 == 0:
+        #     print(len(comments))
          # Omit this to not limit to max_comments
-#         if len(comments) >= max_comments:
-#             break
+        if max_comments is not None:
+            if counter >= max_comments:
+                 break
 
     # Below code only used if the `if len(comments)` lines above not commented out
-    if False: # False flag - to be changed to True if we want to get rest of the results
-        for c in gen:
-            comments.append(c)
+    #if False: # False flag - to be changed to True if we want to get rest of the results
+    #    for c in gen:
+    #        comments.append(c)
+
 
     # Create pandas data frame to return
-    df = pd.DataFrame([obj.d_ for obj in comments])
+    #df = pd.DataFrame([obj.d_ for obj in comments])
 
-    return df
+    return # empty return -- file saved
