@@ -1,2 +1,5 @@
 # Exclude any data
 /data
+
+# Exclude pycache
+/__pycache__
