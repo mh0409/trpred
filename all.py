@@ -63,19 +63,19 @@ def crawl_comments(subreddit, before = None, after = None, max_comments = None):
     :param max_submissions: The max number of comments to download.
     :return: a data frame of comments"""
 
-    api = PushshiftAPI()
-
-    if before is None and after is None:
-        gen = api.search_comments(subreddit = subreddit)
-    else:
-        gen = api.search_comments(subreddit = subreddit,
-                                 before = before,
-                                 after = after)
-
-    comments = []
+    # api = PushshiftAPI()
+    #
+    # if before is None and after is None:
+    #     gen = api.search_comments(subreddit = subreddit)
+    # else:
+    #     gen = api.search_comments(subreddit = subreddit,
+    #                              before = before,
+    #                              after = after)
+    #
+    # comments = []
 
     today = dt.datetime.utcnow().date()
-    filename = "data/raw/comments/" + "allcomments-asof-" + str(today) + ".csv" # create filename
+    filename_csv = "data/raw/comments/" + "allcomments-asof-" + str(today) + ".csv"  # create filename
 
     counter = 0
 
@@ -85,15 +85,29 @@ def crawl_comments(subreddit, before = None, after = None, max_comments = None):
 
         if counter % 10000 == 0:
             df = pd.DataFrame([obj.d_ for obj in comments])
-            df.to_csv(filename, index = False, mode = "a")
+            df.to_csv(filename_csv, index = False, mode = "a") ## doing csv first since cant append to json
+
             print(counter)
 
-        # if len(comments) % 10000 == 0:
-        #     print(len(comments))
+            comments = [] # empty comments container to avoid memory issues
+
+        if len(comments) % 10000 == 0:
+            print(len(comments))
+
          # Omit this to not limit to max_comments
         if max_comments is not None:
             if counter >= max_comments:
                  break
+
+    # Convert to json
+    filename_json = "data/raw/comments/" + "allcomments-asof-" + str(today) + ".json"  # create filename
+
+    json_data = [json.dumps(d) for d in csv.DictReader(open(filename_csv))]
+    # Save as json
+
+
+    with open(filename_json, 'w', encoding='utf-8') as f: # write file
+        json.dump(json_data, f, ensure_ascii = False, indent=4)
 
     # Below code only used if the `if len(comments)` lines above not commented out
     #if False: # False flag - to be changed to True if we want to get rest of the results
