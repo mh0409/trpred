@@ -9,15 +9,17 @@ from dateutil.relativedelta import relativedelta
 ## Comments
 
 # Get past two years
-today = dt.datetime.utcnow().date()
-two_yrs_ago = today - relativedelta(years = 2)
-
-all.crawl_comments("TheRedPill", before = today, after = two_yrs_ago)
+# today = dt.datetime.utcnow().date()
+# two_yrs_ago = today - relativedelta(years = 2)
+#
+# all.crawl_comments("TheRedPill", before = today, after = two_yrs_ago)
 
 # Get all comments
-# all.crawl_comments('TheRedPill', 1000)
+# all.crawl_comments('TheRedPill')
 
-# Save data as .json
-#filename = "allcomments-" + str(today) + ".json" # create filename
 
-#df_comments.to_json(filename)
+# Get comments for ancillary subreddits
+subreddits = ["RedPillWomen", "askTRP", "RedPillParenting", "thankTRP", "becomeaman", "altTRP", "GEOTRP", "TRPOffTopic"]
+
+for s in subreddits:
+     all.crawl_comments(s)

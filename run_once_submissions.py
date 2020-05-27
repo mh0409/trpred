@@ -13,13 +13,27 @@ import json
 # Get date
 today = dt.datetime.utcnow().date()
 
-# Get submissions
-submissions = all.crawl_subreddit("TheRedPill")
+## COMMENTED OUT BC ADDED ANCILLARY SUBREDDITS
+# # Get r/TRP submissions
+# submissions = all.crawl_subreddit("TheRedPill")
+#
+# # Save data as .json
+# os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing_Institute/trpred/data/raw/submissions") # change wd
+# filename = "submissions-" + str(today) + ".json" # create filename
+#
+# with open(filename, 'w', encoding='utf-8') as f: # write file
+#     json.dump(submissions, f, ensure_ascii = False, indent=4)
 
-# Save data as .json
+subreddits = ["RedPillWomen", "askTRP", "RedPillParenting", "thankTRP", "becomeaman", "altTRP", "GEOTRP", "TRPOffTopic"]
 
-os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing_Institute/trpred/data/raw/submissions") # change wd
-filename = "submissions-" + str(today) + ".json" # create filename
+for s in subreddits:
+    # Get submissions
+    submissions = all.crawl_subreddit(s)
 
-with open(filename, 'w', encoding='utf-8') as f: # write file
-    json.dump(submissions, f, ensure_ascii = False, indent=4)
+    # Save data as .json
+
+    os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing_Institute/trpred/data/raw/submissions") # change wd
+    filename = str(s) + "-submissions-" + str(today) + ".json" # create filename
+
+    with open(filename, 'w', encoding='utf-8') as f: # write file
+        json.dump(submissions, f, ensure_ascii = False, indent=4)
