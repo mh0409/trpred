@@ -54,14 +54,15 @@ def crawl_subreddit(subreddit, max_submissions = 200000):
 
         if len(all_submissions) % 10000 == 0: # to track progress for big pulls
             print(len(all_submissions))
-    return all_submissions[:max_submissions]
+
+    return all_submissions[:]
 
 ## Comments
 def crawl_comments(subreddit, before = None, after = None, max_comments = None):
     """Crawl comments from a subreddit
     :param subreddit: The subreddit to crawl.
     :param max_submissions: The max number of comments to download.
-    :return: a data frame of comments"""
+    :return: empty - saved file"""
 
     api = PushshiftAPI()
 
@@ -73,9 +74,9 @@ def crawl_comments(subreddit, before = None, after = None, max_comments = None):
                                  after = after)
 
     comments = []
-
+    doc_num = []
     today = dt.datetime.utcnow().date()
-    filename_json = "data/raw/comments/" + str(subreddit) + "-allcomments-asof-" + str(today) + ".json"
+    filename_json = "data/raw/comments/" + str(subreddit) + "-allcomments-" + str(today) + ".json"
     counter = 0
 
     for c in gen:
@@ -98,7 +99,14 @@ def crawl_comments(subreddit, before = None, after = None, max_comments = None):
             if counter >= max_comments:
                  break
 
+    # Final number of comments
+    print(counter)
 
+    # Save last batch of comments
+    for obj in comments:
+        with open(filename_json, 'a', encoding = 'utf-8') as fp:
+            json.dump(obj.d_, fp, ensure_ascii = False) # write file
+            fp.write('\n')
 
 
 
@@ -109,7 +117,5 @@ def crawl_comments(subreddit, before = None, after = None, max_comments = None):
     #        comments.append(c)
 
 
-    # Create pandas data frame to return
-    #df = pd.DataFrame([obj.d_ for obj in comments])
 
-    return # empty return -- file saved
+    return # empty return, saved file

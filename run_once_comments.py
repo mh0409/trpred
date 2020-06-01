@@ -15,11 +15,11 @@ from dateutil.relativedelta import relativedelta
 # all.crawl_comments("TheRedPill", before = today, after = two_yrs_ago)
 
 # Get all comments
-# all.crawl_comments('TheRedPill')
+all.crawl_comments('TheRedPill')
 
 
 # Get comments for ancillary subreddits
-subreddits = ["RedPillWomen", "askTRP", "RedPillParenting", "thankTRP", "becomeaman", "altTRP", "GEOTRP", "TRPOffTopic"]
+# subreddits = ["RedPillWomen", "askTRP", "RedPillParenting", "thankTRP", "becomeaman", "altTRP", "GEOTRP", "TRPOffTopic"]
 
-for s in subreddits:
-     all.crawl_comments(s)
+# for s in subreddits:
+#      all.crawl_comments(s)
