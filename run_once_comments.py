@@ -1,4 +1,4 @@
-import all
+import all_scrape as all
 import datetime as dt
 import pandas as pd
 import os
@@ -8,18 +8,43 @@ from dateutil.relativedelta import relativedelta
 
 ## Comments
 
-# Get past two years
-# today = dt.datetime.utcnow().date()
-# two_yrs_ago = today - relativedelta(years = 2)
-#
-# all.crawl_comments("TheRedPill", before = today, after = two_yrs_ago)
-
 # Get all comments
-all.crawl_comments('TheRedPill')
+# all.crawl_comments("TheRedPill")
 
 
 # Get comments for ancillary subreddits
-# subreddits = ["RedPillWomen", "askTRP", "RedPillParenting", "thankTRP", "becomeaman", "altTRP", "GEOTRP", "TRPOffTopic"]
-
-# for s in subreddits:
-#      all.crawl_comments(s)
+subreddits = [\
+             #    "RedPillWomen",\
+             #    "askTRP",\
+             #    "RedPillParenting",\
+             #    "thankTRP",\
+             #    "RedPillLit",\
+             #    "becomeaman",\
+             #    "altTRP",\
+             #    "GEOTRP",\
+             #    "TRPOffTopic",\
+             #     "u_TRP_Scepter",\
+             #     "RedPillNonMonogamy",\
+             #     "RedPillWives",\
+             #     "redpillfatherhood",\
+             #     "redpillbooks",\
+             #     "RedPillWorkplace",\
+             #     "theRedPillLeft",\
+             #     "TRPmemes",\
+             #     "theredpillright",\
+             #     "EthnicRedPill",\
+             #     "marriedredpill",\
+             # "AskFeminists", "askseddit", "badwomensanatomy",\
+             #  "Egalitarianism", "exredpill", "FeMRADebates",\
+             #  "GEOTRP", "IncelsInAction", "IncelsWithoutHate",\
+             #  "masculism", "MensRants",\
+              # "MensRights",\
+             # "mensrightslaw",\
+             #  "MensRightsMeta",\
+              # "MGTOW"\
+              # "mgtowbooks","MRActivism",\
+              # "NOMAAM", "pua", "PurplePillDebate", "seduction", "Trufemcels"\
+              ]
+for s in subreddits:
+     all.crawl_comments(s)
+     print(s+" done")

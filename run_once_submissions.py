@@ -1,8 +1,9 @@
-import all
+import all_scrape as all
 import datetime as dt
 import pandas as pd
 import os
 import json
+import time
 
 ### SUBMISSIONS ###
 
@@ -14,26 +15,66 @@ import json
 today = dt.datetime.utcnow().date()
 
 ## COMMENTED OUT BC ADDED ANCILLARY SUBREDDITS
+
+##### JUST R/TRP ########
 # # Get r/TRP submissions
-submissions = all.crawl_subreddit("TheRedPill")
+# submissions = all.crawl_subreddit("TheRedPill")
+#
+# # Save data as .json
+# os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing_Institute/trpred/data/raw/submissions") # change wd
+# filename = str("TheRedPill") + "-allsubmissions-" + str(today) + ".json" # create filename
+#
+# with open(filename, 'w', encoding='utf-8') as f: # write file
+#     json.dump(submissions, f, ensure_ascii = False, indent=4)
+#########################
 
-# Save data as .json
-os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing_Institute/trpred/data/raw/submissions") # change wd
-filename = str("TheRedPill") + "-allsubmissions-" + str(today) + ".json" # create filename
 
-with open(filename, 'w', encoding='utf-8') as f: # write file
-    json.dump(submissions, f, ensure_ascii = False, indent=4)
+subreddits = [#"RedPillWomen",\
+             #    "askTRP",\
+             #    "RedPillParenting",\
+             #    "thankTRP",\
+             #    "RedPillLit",\
+             #    "becomeaman",\
+             #    "altTRP",\
+             #    "GEOTRP",\
+             #    "TRPOffTopic",\
+             #     "u_TRP_Scepter",\
+             #     "RedPillNonMonogamy",\
+             #     "RedPillWives",\
+             #     "redpillfatherhood",\
+             #     "redpillbooks",\
+             #     "RedPillWorkplace",\
+             #     "theRedPillLeft",\
+             #     "TRPmemes",\
+             #     "theredpillright",\
+             #     "EthnicRedPill",\
+             #     "marriedredpill",\
+             # "AskFeminists", "askseddit", "badwomensanatomy",\
+             #  "Egalitarianism", "exredpill", \
+              # "FeMRADebates",\
+              # "GEOTRP", "IncelsInAction", "IncelsWithoutHate",\
+              # "masculism", "MensRants", \
+              # "MensRights",\
+              # "mensrightslaw",\
+              # "MensRightsMeta",\
+              # "MGTOW",\
+              # "mgtowbooks","MRActivism",\
+              # "NOMAAM", "pua",
+              # "PurplePillDebate",\
+              # "seduction",\
+               # "Trufemcels"\
+               ]
 
-# subreddits = ["RedPillWomen", "askTRP", "RedPillParenting", "thankTRP", "becomeaman", "altTRP", "GEOTRP", "TRPOffTopic"]
+for s in subreddits:
+    # Get submissions
+    all.crawl_subreddit(s)
+    print(s+" done")
+    time.sleep(3)
 
-# for s in subreddits:
-#     # Get submissions
-#     submissions = all.crawl_subreddit(s)
-
-#     # Save data as .json
-
-#     os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing_Institute/trpred/data/raw/submissions") # change wd
-#     filename = str(s) + "-submissions-asof-" + str(today) + ".json" # create filename
-
-#     with open(filename, 'w', encoding='utf-8') as f: # write file
-#         json.dump(submissions, f, ensure_ascii = False, indent=4)
+    # Save data as .json
+    ## ALREADY DOING THIS IN THE ALL_SRAPE.PY FILE SO DELETE BELOW?
+    # os.chdir("/Users/mariajoseherrera/Documents/Admin/yahb/Turing_Institute/trpred/data/raw/submissions") # change wd
+    # filename = str(s) + "-submissions-asof-" + str(today) + ".json" # create filename
+    #
+    # with open(filename, 'w', encoding='utf-8') as f: # write file
+    #     json.dump(submissions, f, ensure_ascii = False, indent=4)
