@@ -1,0 +1,82 @@
+---
+title: "build_network"
+author: "Maria Jose Herrera"
+date: "9/28/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("igraph")
+library("igraphdata")
+library("tidyverse")
+```
+
+
+# Load data
+```{r}
+# Set wd
+setwd("/Volumes/SAMSUNG/trpred")
+
+# Read in file
+df_sample <- read_csv("data/info/sample_users.csv")
+
+## this file based on a random sample of 50,000 unique users who commented across all the subreddits
+
+```
+
+
+# Create df of edges and weights
+
+```{r}
+set.seed(1)
+
+# Generate network using first two columns (subreddit_1 and subreddit_2)
+subreddits <- graph.edgelist(as.matrix(df_sample[,1:2]), directed = FALSE) # Note that while above I created a new object that was the matrix and then created the graph, that's not necessary; you can have that step simply as a nested operation within the parentheses
+summary(subreddits)
+
+### TODO: ADD WEIGHT BY COLUMN 3 (common_users)
+
+# Set weight by number of common users
+E(subreddits)$weight <- df_sample$common_users
+
+# Set layout
+dlayout <- layout.fruchterman.reingold(subreddits)
+
+
+# Plot the graph
+plot(subreddits, 
+     edge.width = E(subreddits)$weight/5, 
+     vertex.size = degree(subreddits)/5, 
+     vertex.label = ifelse(degree(subreddits) >= 10, V(subreddits)$name, NA),
+     vertex.label.cex = 0.5,
+     layout = dlayout)
+
+
+### found a way to separate things out a bit more in SO but not exactly sure how it does so....leaving it here for now
+### Basically, the function adds an extra vertex that is connected to all vertices belonging to the same community. The layout is calculated based on the new graph. Since each community is now connected by a common vertex, they tend to cluster together.
+# (in this case we don't have communities so....)
+# # Source: http://stackoverflow.com/a/28722680/496488
+# layout.by.attr <- function(graph, wc, cluster.strength=1,layout=layout.auto) {  
+#   g <- graph.edgelist(get.edgelist(graph)) # create a lightweight copy of graph w/o the attributes.
+#   E(g)$weight <- 1
+# 
+#   attr <- cbind(id=1:vcount(g), val=wc)
+#   g <- g + vertices(unique(attr[,2])) + igraph::edges(unlist(t(attr)), weight=cluster.strength)
+# 
+#   l <- layout(g, weights=E(g)$weight)[1:vcount(graph),]
+#   return(l)
+# }
+
+```
+
+
+
+
+
+
+
+

@@ -10,6 +10,8 @@ import pandas as pd
 import re
 import datetime as dt
 import csv
+from os import listdir
+from os.path import isfile, join
 
 # Start date = date that r/trp was created
 start = dt.datetime.strptime('2012-10-25', '%Y-%m-%d').date()
@@ -119,9 +121,10 @@ def clean_subreddit(filename, data_type):
 
 
     # Save to json
-    df_keep.to_csv(processedfile_csv, mode = "w") # mode= w will overwrite previous file
     df_keep_text.to_csv(processed_textfile_csv, mode = "w")
-    print(len(df_keep.index))
+    df_keep.to_csv(processedfile_csv, mode = "w") # mode= w will overwrite previous file
+    print(len(df_keep_text.index))
+    print(processed_textfile_csv)
 
 
     data = [] # force empty
@@ -129,7 +132,114 @@ def clean_subreddit(filename, data_type):
 
     return keep_cols
 
-## TODO: update so that i'm adding to comment file in the same way i scrape it for the big r/TRP scrape
-# with open(processedfile_csv, 'a', encoding = 'utf-8') as fp:
-#         json.dump(obj.d_, fp, ensure_ascii = False) # write file
-#         fp.write('\n')
+def clean_comments(subreddit_folder):
+    """Cleans the file passed in as the first argument based on data type.
+    Returns the column headers we can expect to see in the saved file."""
+
+    ## MAYBE REPLACE subreddit_folderS WITH SUBREDDIT AND MOVE GLOB INTO HERE
+    ## or split into clean comments and clean submissions since comments are so much bigger
+
+
+    # Get date for subreddit_folder
+    today = dt.datetime.utcnow().date()
+
+    regex = r"([^\/]+)(?=\-all)"
+    matches = re.search(regex, subreddit_folder)
+
+    new_file = matches.group(1)
+
+    # Comment files
+    comment_files = [f for f in listdir(subreddit_folder) if isfile(join(subreddit_folder, f))]
+
+    # Create list of columns to keep
+    keep_cols = ['id', 'created_utc','author',\
+                  'author_flair_text', 'score', 'parent_id',\
+                  'subreddit']
+    keep_cols_text = ['id', 'created_utc', 'parent_id', 'body']
+
+    # Create file name
+    processedfile_csv = "data/processed/comments/" + new_file + \
+        "-metadata" +  ".csv"
+
+    processed_textfile_csv = "data/processed/comments/" + new_file + \
+        "-text" + ".csv"
+
+
+    # df_keep = pd.DataFrame()
+    # df_keep_text = pd.DataFrame()
+
+    counter = 0
+
+    # Read in json file
+    for i in comment_files:
+        print(i)
+        counter += 1
+
+        df_keep = pd.DataFrame()
+        df_keep_text = pd.DataFrame()
+
+        file_path = subreddit_folder + "/" + i
+
+        try:
+            data = pd.read_json(file_path)
+
+        # ValueError: Trailing data thrown if file is pretty indented
+        except ValueError:
+            data = pd.read_json(file_path, lines = True)
+
+
+        try:
+            df_keep = df_keep.append(data[keep_cols])
+        except KeyError:
+            keep_cols = ['id', 'created_utc', 'author', 'title',\
+                        'score', 'num_comments', 'subreddit']
+            df_keep = df_keep.append(data[keep_cols])
+
+
+        try:
+            df_keep_text = df_keep_text.append(data[keep_cols_text])
+        except KeyError:
+            keep_cols_text = ['id', 'created_utc', 'author']
+            df_keep_text = df_keep_text.append(data[keep_cols_text])
+
+        # Make sure there's at least 1 observation
+        observations = len(df_keep.index)
+
+        # Change date format
+        ## For metadata
+        if observations == 0:
+            print("No comments found in " + i)
+            continue
+
+        else:
+            df_keep['datetime_dv'] = pd.to_datetime(df_keep['created_utc'], unit = 's')# dv = derived
+            df_keep['date_dv'] = df_keep['datetime_dv'].dt.date
+
+            # For text
+            df_keep_text['datetime_dv'] = pd.to_datetime(df_keep_text['created_utc'], unit = 's')# dv = derived
+            df_keep_text['date_dv'] = df_keep_text['datetime_dv'].dt.date
+
+
+        ##### Delimit by date #####
+        # TODO: break this out into different function
+        # Create mask of time slot
+        mask = (df_keep['date_dv'] >= start) & (df_keep['date_dv'] <= end) # inclusive on either end
+        mask_text = (df_keep_text['date_dv'] >= start) & (df_keep_text['date_dv'] <= end)
+
+        # Only keep data within date frame
+        df_keep = df_keep.loc[mask]
+        df_keep_text = df_keep_text.loc[mask_text]
+        ############################
+
+
+        # Save to csv
+        if counter == 1:
+            df_keep.to_csv(processedfile_csv, mode = "w")
+            df_keep_text.to_csv(processed_textfile_csv, mode = "w")
+
+        else:
+            df_keep.to_csv(processedfile_csv, mode = "a", header = False)
+            df_keep_text.to_csv(processed_textfile_csv, mode = "a", header = False)
+
+
+    return keep_cols

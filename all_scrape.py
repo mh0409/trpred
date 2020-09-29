@@ -34,7 +34,7 @@ def get_pages(subreddit: str, last_posttime = None):
     return results.json()["data"]
 
 
-def crawl_subreddit(subreddit, max_submissions = 200000):
+def crawl_subreddit(subreddit, max_submissions = 20000000):
     """Crawl submissions from a subreddit.
     :param subreddit: The subreddit to crawl.
     :param max_submissions: The maximum number of submissions to download.
@@ -55,7 +55,7 @@ def crawl_subreddit(subreddit, max_submissions = 200000):
         last_posttime = current_submissions[-1]["created_utc"]
         all_submissions += current_submissions
 
-        time.sleep(3)
+        time.sleep(1)
 
         counter = len(all_submissions)
 
