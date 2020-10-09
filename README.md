@@ -1,4 +1,7 @@
 # trp.red
+
+ ** TO BE UPDATED **
+ 
 For use with Turing trp.red project
 
 run_daily.py
