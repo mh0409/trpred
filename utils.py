@@ -29,7 +29,7 @@ def create_folder(raw_comments):
         print ("Successfully created the directory %s" % path)
         chunk_file(path)
 
-        return path
+    return path
 
 
 
@@ -81,3 +81,40 @@ def get_subreddits():
     all_subreddits = list(set([x for x in subreddits[0]]))
 
     return all_subreddits
+
+def file_len(fname):
+    with open(fname) as f:
+    #     for i, l in enumerate(f):
+    #         pass
+    # return i + 1
+
+        reader = csv.reader(f,delimiter = ",")
+        line_count = sum(1 for line in f)
+    return line_count - 1 # subtracting 1 bc of header
+
+def count_processedentries(data_type):
+    df_totals = pd.DataFrame(columns = ['subreddit', 'total'])
+
+    if data_type == "comments":
+        files = glob.glob("data/processed/comments/*-metadata.csv")
+
+
+    if data_type == "submissions":
+        files = glob.glob("data/processed/submissions/*-metadata.csv")
+
+    else:
+        raise ValueError("Invalid data_type: must be either \
+        'comment' or 'submission'")
+
+    for i in files:
+        # get name of subreddit from file name
+        regex = r"^.*\/([^-]*)-.*$"
+        matches = re.search(regex, i)
+        subreddit = matches.group(1)
+
+        # get the length of the file using helper function
+        total = file_len(i)
+
+        df_totals = df_totals.append({'subreddit':subreddit, 'total':total}, ignore_index = True)
+
+    return df_totals
