@@ -14,10 +14,13 @@ from fsplit.filesplit import FileSplit
 from psaw import PushshiftAPI # https://github.com/dmarx/psaw
 
 
-def create_folder(raw_comments):
-    filename = get_filename(raw_comments) # get the filename to create folder
+def create_folder(raw_file, file_type):
 
-    path = "data/raw/comments/" + filename
+    if file_type not in ["submissions", "comments"]:
+        raise NameError("file_type must be either 'submissions' or 'comments'.")
+
+    filename = get_filename(raw_file) # get the filename to create folder
+    path = "data/raw/" + file_type + "/" + filename
 
     try:
         os.mkdir(path) # create directory
@@ -45,11 +48,9 @@ def chunk_file(folder_path):
 
         dir = os.listdir(folder_path)
 
-        print(dir)
-
         # If folder is empty (i.e. file hasn't been split yet)...
         if len(dir) == 0:
-            print("folder is empty")
+            print("Folder is empty; raw file to be split")
 
             # ...then split file
             fs = FileSplit(file = file_path, splitsize = 15000000, output_dir = folder_path)
@@ -72,7 +73,9 @@ def get_enddate():
     return end
 
 def get_subreddits():
-    with open('~/data/reference/subreddits_of_interest.csv', newline='') as f:
+    subreddits = []
+
+    with open('data/reference/subreddits_of_interest.csv', newline='') as f:
         reader = csv.reader(f)
         for row in reader:
                 subreddits.append(row)
@@ -84,13 +87,13 @@ def get_subreddits():
 
 def file_len(fname):
     with open(fname) as f:
-    #     for i, l in enumerate(f):
-    #         pass
-    # return i + 1
+        for i, l in enumerate(f):
+            pass
+    return i + 1
 
-        reader = csv.reader(f,delimiter = ",")
-        line_count = sum(1 for line in f)
-    return line_count - 1 # subtracting 1 bc of header
+    #     reader = csv.reader(f,delimiter = ",")
+    #     line_count = sum(1 for line in f)
+    # return line_count - 1 # subtracting 1 bc of header
 
 def count_processedentries(data_type):
     df_totals = pd.DataFrame(columns = ['subreddit', 'total'])

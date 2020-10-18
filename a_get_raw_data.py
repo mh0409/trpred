@@ -4,7 +4,6 @@ import pandas as pd
 import os
 import time
 import json
-import get_raw_data
 from dateutil.relativedelta import relativedelta
 # Load modules
 import pandas as pd
@@ -62,7 +61,7 @@ def get_submissions(subreddit, start, end, max_submissions = 20000000):
     k = 0 # get accurate number of posts in a subreddit
 
     while len(all_submissions) < max_submissions:
-        current_submissions = get_pages(subreddit, range_start = start, range_end = end, last_posttime)
+        current_submissions = get_pages(subreddit, last_posttime, range_start = start, range_end = end)
         if len(current_submissions) == 0:
             break
         earliest_posttime = current_submissions[0]["created_utc"]
@@ -144,7 +143,7 @@ def get_comments(subreddit, before = None, after = None, max_comments = None):
             json.dump(obj.d_, fp, ensure_ascii = False) # write file
             fp.write('\n')
 
-if __name__ == "__main__"
+if __name__ == "__main__":
     # Load list of subreddits of interest
     ls_subreddits = utils.get_subreddits()
 

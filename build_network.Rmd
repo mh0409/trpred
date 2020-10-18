@@ -99,15 +99,15 @@ df_bipart$final_user <- ifelse(df_bipart$author %in% overlap, paste0("u_", df_bi
 
 ```{r}
 # Create mapping
-allauthors_edges <- as.matrix(data.frame(df_bipartite$final_author, df_bipartitle$subreddit))
+allauthors_edges <- as.matrix(data.frame(df_bipart$final_user, df_bipart$subreddit))
 
 bi_subreddits <- graph.edgelist(allauthors_edges)
 
-V(bi_subreddits)$type <- V(bi_subreddits)$name %in% allauthors_edges[,1]
+V(bi_subreddits)$type <- bipartite.mapping(bi_subreddits)$type
 
 # IGRAPH 14e4d5c DN-B 235890 277830 -- : we have a bipartite graph
 
-# bipartite.projection(bi_subreddits) ## this isn't working for some reason so check to see where subreddits are connected to eachother directly
+plot(bi_subreddits)
 
 ## get bipartite working
 
