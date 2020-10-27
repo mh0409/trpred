@@ -107,9 +107,10 @@ V(bi_subreddits)$type <- bipartite.mapping(bi_subreddits)$type
 
 # IGRAPH 14e4d5c DN-B 235890 277830 -- : we have a bipartite graph
 
-plot(bi_subreddits)
-
 ## get bipartite working
+bipartite_projection(bi_subreddits)
+
+
 
 ```
 

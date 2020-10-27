@@ -30,11 +30,11 @@ def get_pages(subreddit: str, range_start = None, range_end = None, last_posttim
                "size": 1000,\
                "sort": "desc",\
                "sort_type": "created_utc",
-               "after": start,
-               "before": end}
+               "after": range_start,
+               "before": range_end}
 
     # Called to "scroll down" page based on before
-    if last_posttime is not None and earliest_posttime is not None:
+    if last_posttime is not None:
         queries["before"] = last_posttime
 
     results = requests.get(url, queries)
@@ -45,7 +45,7 @@ def get_pages(subreddit: str, range_start = None, range_end = None, last_posttim
     return results.json()["data"]
 
 
-def get_submissions(subreddit, start, end, max_submissions = 20000000):
+def get_submissions(subreddit, after, before, max_submissions = 20000000):
     """Crawl submissions from a subreddit.
     :param subreddit: The subreddit to crawl.
     :param max_submissions: The maximum number of submissions to download.
@@ -60,11 +60,15 @@ def get_submissions(subreddit, start, end, max_submissions = 20000000):
 
     k = 0 # get accurate number of posts in a subreddit
 
+    # Define last and earliest last_posttime
+    last_posttime = None
+    earliest_posttime = None
+
     while len(all_submissions) < max_submissions:
-        current_submissions = get_pages(subreddit, last_posttime, range_start = start, range_end = end)
+        current_submissions = get_pages(subreddit, range_start = after, range_end = before, last_posttime = last_posttime)
         if len(current_submissions) == 0:
             break
-        earliest_posttime = current_submissions[0]["created_utc"]
+        # earliest_posttime = current_submissions[0]["created_utc"]
         last_posttime = current_submissions[-1]["created_utc"]
         all_submissions += current_submissions
 
@@ -153,8 +157,8 @@ if __name__ == "__main__":
 
     # Get submissions and comments:
     for i in ls_subreddits:
-        utils.crawl_submissions(i, start, end)
+        utils.crawl_submissions(i, after = start, before = end)
         print(s+" submissions collected")
 
-        utils.crawl_comments(i, start, end)
+        utils.crawl_comments(i, after = start, before = end)
         print(s+" comments collected")

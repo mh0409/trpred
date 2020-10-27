@@ -102,12 +102,11 @@ def count_processedentries(data_type):
         files = glob.glob("data/processed/comments/*-metadata.csv")
 
 
-    if data_type == "submissions":
+    elif data_type == "submissions":
         files = glob.glob("data/processed/submissions/*-metadata.csv")
 
     else:
-        raise ValueError("Invalid data_type: must be either \
-        'comment' or 'submission'")
+        raise ValueError("Invalid data_type: must be either 'comments' or 'submissions'")
 
     for i in files:
         # get name of subreddit from file name
