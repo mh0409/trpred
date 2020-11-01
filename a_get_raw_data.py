@@ -45,7 +45,7 @@ def get_pages(subreddit: str, range_start = None, range_end = None, last_posttim
     return results.json()["data"]
 
 
-def get_submissions(subreddit, after, before, max_submissions = 20000000):
+def get_submissions(subreddit, after, before, max_submissions = 200000000):
     """Crawl submissions from a subreddit.
     :param subreddit: The subreddit to crawl.
     :param max_submissions: The maximum number of submissions to download.
@@ -62,13 +62,11 @@ def get_submissions(subreddit, after, before, max_submissions = 20000000):
 
     # Define last and earliest last_posttime
     last_posttime = None
-    earliest_posttime = None
 
     while len(all_submissions) < max_submissions:
         current_submissions = get_pages(subreddit, range_start = after, range_end = before, last_posttime = last_posttime)
         if len(current_submissions) == 0:
             break
-        # earliest_posttime = current_submissions[0]["created_utc"]
         last_posttime = current_submissions[-1]["created_utc"]
         all_submissions += current_submissions
 
@@ -112,6 +110,8 @@ def get_comments(subreddit, before = None, after = None, max_comments = None):
                                  before = before,
                                  after = after)
 
+
+
     comments = []
     doc_num = []
     today = dt.datetime.utcnow().date()
@@ -119,10 +119,11 @@ def get_comments(subreddit, before = None, after = None, max_comments = None):
     counter = 0
 
     for c in gen:
+        print("counter: " + str(counter))
         comments.append(c)
         counter += 1
 
-        if counter % 10000 == 0:
+        if counter % 1000 == 0:
             # Incrementally save and append json
             for obj in comments:
                 with open(filename_json, 'a', encoding = 'utf-8') as fp:
