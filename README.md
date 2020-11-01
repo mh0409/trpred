@@ -1,20 +1,24 @@
 # trp.red
 For use with Turing trp.red project
 
-run_daily.py
-* To be run daily to collect both submissions and comments added over the past day.
-* Functions run from this file are in daily.py
+a_get_raw_data.py:
+	* Contains methods used to collect data from Pushshift API; if called from terminal, will collect all posts (a.k.a submissions) and comments for the subreddits listed in the `sudreddits.csv` file
+	* To collect submissions for one subreddit at a time:
+		*  get_submissions(subreddit, after, before, max_submissions = 200000000)
+			* Parameters:
+    				* **subreddit**: the subreddit that will be queried for submissions
+    				* **after**: the start date or lower bound of the time period desired
+				* **before**: the end date or upper bound of the time period desired 
+			* This method also calls the `get_pages()` method within it which essentially "scrolls down" after each API query is made since you can only collect 500 items at a time (per Pushshift Github repo)
+			
+	* To collect comments:
+		* get_comments(subreddit, before = None, after = None, max_comments = None)
+			* Parameters: 
+				* **subreddit**: the subreddit that will be queried for comments
+				* **after**: he start date or lower bound of the time period desired
+				* **before**: the end date or upper bound of the time period desired 
+			* Unlike the submissions code, this method uses the PSAW module to collect comments (unsure why this method didn't work with submissions)
+			
+	
 
-run_once_submissions.py
-* Run to scrape all submissions of r/TheRedPill
-* Calls function `crawl_subreddit()` from all.py
 
-run_once_comments.py
-* Run to scrape two years of comments of r/TheRedPill
-* Calls function `crawl_comments()` from all.py
-
-all.py
-* Contains functions `get_pages()`, `crawl_subreddit()`, `crawl_comments()`
-
-daily.py
-* Contains functions `get_pages()` (diff vs. one in all.py -- change name?), `get_dailysubmissions()`, `get_dailycomments()`
