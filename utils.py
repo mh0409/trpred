@@ -91,10 +91,6 @@ def file_len(fname):
             pass
     return i + 1
 
-    #     reader = csv.reader(f,delimiter = ",")
-    #     line_count = sum(1 for line in f)
-    # return line_count - 1 # subtracting 1 bc of header
-
 def count_processedentries(data_type):
     df_totals = pd.DataFrame(columns = ['subreddit', 'total'])
 
