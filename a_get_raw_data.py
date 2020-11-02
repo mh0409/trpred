@@ -30,12 +30,12 @@ def get_pages(subreddit: str, range_start = None, range_end = None, last_posttim
                "size": 1000,\
                "sort": "desc",\
                "sort_type": "created_utc",
-               "after": range_start,
-               "before": range_end}
+               "after": str(range_start),
+               "before": str(range_end)}
 
     # Called to "scroll down" page based on before
     if last_posttime is not None:
-        queries["before"] = last_posttime
+        queries["before"] = str(last_posttime)
 
     results = requests.get(url, queries)
 
