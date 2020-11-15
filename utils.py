@@ -116,3 +116,8 @@ def count_processedentries(data_type):
         df_totals = df_totals.append({'subreddit':subreddit, 'total':total}, ignore_index = True)
 
     return df_totals
+
+def dedupe(filename):
+    df_dupe = pd.read_csv(filename)
+    df_new = df_dupe.drop_duplicates(subset = ['id'])
+    df_new.to_csv(filename, index=False)

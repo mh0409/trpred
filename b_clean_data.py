@@ -34,10 +34,10 @@ def clean_comments(raw_comments):
     keep_cols_text = ['id', 'created_utc', 'link_id', 'body']
 
     # Create file name
-    processedfile_csv = "data/processed/comments/" + new_file + \
+    processedfile_csv = "data/processed/comments/metadata/" + new_file + \
         "-metadata" +  ".csv"
 
-    processed_textfile_csv = "data/processed/comments/" + new_file + \
+    processed_textfile_csv = "data/processed/comments/text/" + new_file + \
         "-text" + ".csv"
 
     counter = 0 # set up counter to determine whether to write or append to file
@@ -107,12 +107,12 @@ def clean_comments(raw_comments):
 
         # Save to csv
         if counter == 1:
-            df_keep.to_csv(processedfile_csv, mode = "w")
-            df_keep_text.to_csv(processed_textfile_csv, mode = "w")
+            df_keep.to_csv(processedfile_csv, mode = "w", index=False)
+            df_keep_text.to_csv(processed_textfile_csv, mode = "w", index=False)
 
         else:
-            df_keep.to_csv(processedfile_csv, mode = "a", header = False)
-            df_keep_text.to_csv(processed_textfile_csv, mode = "a", header = False)
+            df_keep.to_csv(processedfile_csv, mode = "a", header = False, index=False)
+            df_keep_text.to_csv(processed_textfile_csv, mode = "a", header = False, index=False)
 
 
 def clean_submissions(raw_submissions):
@@ -138,10 +138,10 @@ def clean_submissions(raw_submissions):
     keep_cols_text = ['id', 'created_utc', 'author', 'selftext']
 
     # Create file name
-    processedfile_csv = "data/processed/submissions/" + new_file + \
+    processedfile_csv = "data/processed/submissions/metadata/" + new_file + \
         "-metadata" +  ".csv"
 
-    processed_textfile_csv = "data/processed/submissions/" + new_file + \
+    processed_textfile_csv = "data/processed/submissions/text/" + new_file + \
         "-text" + ".csv"
 
  # set up counter to determine whether to write or append to file
@@ -210,15 +210,17 @@ def clean_submissions(raw_submissions):
 
 
             if counter == 1:
-                df_keep.to_csv(processedfile_csv, mode = "w")
-                df_keep_text.to_csv(processed_textfile_csv, mode = "w")
+                df_keep.to_csv(processedfile_csv, mode = "w", index=False)
+                df_keep_text.to_csv(processed_textfile_csv, mode = "w", index=False)
 
             else:
-                df_keep.to_csv(processedfile_csv, mode = "a", header = False)
-                df_keep_text.to_csv(processed_textfile_csv, mode = "a", header = False)
+                df_keep.to_csv(processedfile_csv, mode = "a", header = False, index=False)
+                df_keep_text.to_csv(processed_textfile_csv, mode = "a", header = False, index=False)
 
 
 if __name__ == "__main__":
+
+    os.chdir("/Volumes/SAMSUNG/trpred") ## DELETE THIS
 
     # Get comment folders
     comment_files = glob.glob("data/raw/comments/*.json")
@@ -227,7 +229,7 @@ if __name__ == "__main__":
         clean_comments(i)
         print(i + " cleaned")
 
-    # Get submission files
+    #Get submission files
     submissions_files = glob.glob("data/raw/submissions/*.json")
 
     for i in submissions_files:

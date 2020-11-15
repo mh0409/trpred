@@ -42,14 +42,14 @@ def get_submissions_aggs(subreddit_names):
 
 def get_comments_aggs(subreddit_names):
 
-    start = utils.get_startdate()
-    end = utils.get_enddate()
+    start = str(utils.get_startdate())
+    end = str(utils.get_enddate())
 
     # Get count of comments per subreddit above
     subred_comments = {}
 
     # Get number of comments in all time (sanity check)
-    for s in all_subred:
+    for s in subreddit_names:
         url = "https://api.pushshift.io/reddit/search/comment/"
         queries = {"subreddit": s,\
                     "size": 0,\

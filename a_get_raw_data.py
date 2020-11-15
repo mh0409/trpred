@@ -108,7 +108,8 @@ def get_comments(subreddit, before = None, after = None, max_comments = None):
     else:
         gen = api.search_comments(subreddit = subreddit,
                                  before = before,
-                                 after = after)
+                                 after = after,
+                                 size = 500)
 
 
 
