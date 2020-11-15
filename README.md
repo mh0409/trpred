@@ -13,6 +13,12 @@ trpred (git folder)
 ├── data               	# Data folder holding all raw and processed data
 │   ├── raw         	# Raw data: output of a_get_raw_data.py
 │   └── processed       # Processed data: output of b_clean_data.py
+|       ├── submissions
+|	|   ├── metadata
+|	|   └── text
+|	└── comments
+|	    ├── metadata
+|	    └── text
 ├── subreddits.csv	# A csv file that contains all of the subreddits of interest (i.e. those to be collected)
 └── 
 ```
@@ -27,7 +33,7 @@ trpred (git folder)
 			* **subreddit**: the subreddit that will be queried for submissions
 			* **after**: the start date or lower bound of the time period desired
 			* **before**: the end date or upper bound of the time period desired 
-			* This method also calls the `get_pages()` method within it which essentially "scrolls down" after each API query is made since you can only collect 500 items at a time (per Pushshift Github repo)
+			* This method also calls the `get_pages()` method within it which essentially "scrolls down" after each API query is made since you can only collect 1000 items at a time (per Pushshift Github repo)
 		* Output:
 			* A file of line separated json objects (where one line is one post)
 ### Comments		
@@ -42,7 +48,7 @@ trpred (git folder)
 			* A file of line separated json objects (where one line is one comment)	
 			
 ## b_clean_data.py
-* Contains methods used to clean collected data. Given the size of some subreddits, I split up the data into two type -- metadata and text files
+* Contains methods used to clean collected data. Given the size of some subreddits, I split up the data into two types -- metadata and text files
 * Metadata files contain the fields of interest minus the text field which contains either the body of a post or comment (and is inherently bigger)
 * The "fields of interest" that I keep in my clean data are specified by `keep_cols` (for metadata files) and `keep_cols_text` for text files in both the comments and submission methods
 * If called from terminal, will `glob()` all the comments files and subsequently clean them, doing the same for submissions afterwards.  
@@ -59,7 +65,7 @@ trpred (git folder)
 		* Parameters:
 			* **raw_comments**: the raw file of comments that will be cleaned
 		* Output:
-			* A csv file where one row is one comment and a column is a field of interest for that post
+			* A csv file where one row is one comment and a column is a field of interest for that comment
 
 ## utils.py
 * TBU
