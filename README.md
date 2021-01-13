@@ -1,6 +1,6 @@
 # trp.red
  
-For use with Turing trp.red project. Code written in python, except for network creation which was done in R.
+For use with Turing trp.red project. Code written in python, except for network creation (incomplete / very slow) which was done in R.
 
 ## Document hierarchy
 * Note that the code below assumes a certain document hierarchy:
