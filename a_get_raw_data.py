@@ -15,6 +15,14 @@ import time
 import datetime as dt
 from psaw import PushshiftAPI # https://github.com/dmarx/psaw
 
+latest_end = None
+
+def get_latest_end():
+    return latest_end
+
+def set_latest_end(new_end):
+    latest_end = new_end
+    return latest_end
 
 # Submissions
 def get_pages(subreddit: str, range_start = None, range_end = None, last_posttime = None):
@@ -27,7 +35,7 @@ def get_pages(subreddit: str, range_start = None, range_end = None, last_posttim
     url = "https://api.pushshift.io/reddit/search/submission"
 
     queries = {"subreddit": subreddit,\
-               "size": 1000,\
+               "size": "100",\
                "sort": "desc",\
                "sort_type": "created_utc",
                "after": str(range_start),
@@ -37,7 +45,14 @@ def get_pages(subreddit: str, range_start = None, range_end = None, last_posttim
     if last_posttime is not None:
         queries["before"] = str(last_posttime)
 
+    print(queries)
+    global latest_end
+    latest_end = queries["before"]
+    print("latest_end: ", latest_end)
+
     results = requests.get(url, queries)
+
+    print(results)
 
     if not results.ok:
         # something wrong happened
@@ -50,6 +65,8 @@ def get_submissions(subreddit, after, before, max_submissions = 200000000):
     :param subreddit: The subreddit to crawl.
     :param max_submissions: The maximum number of submissions to download.
     :return: A list of submissions."""
+
+    print("inside get_submissions")
 
     all_submissions = [] # empty list to hold all submissions
     last_posttime = None  # will become an empty list when reached the last page
@@ -64,17 +81,20 @@ def get_submissions(subreddit, after, before, max_submissions = 200000000):
     last_posttime = None
 
     while len(all_submissions) < max_submissions:
+        print("about to call get pages")
         current_submissions = get_pages(subreddit, range_start = after, range_end = before, last_posttime = last_posttime)
+        print("global latest_end: ", get_latest_end())
         if len(current_submissions) == 0:
             break
         last_posttime = current_submissions[-1]["created_utc"]
         all_submissions += current_submissions
 
-        time.sleep(1)
+        time.sleep(5)
 
         counter = len(all_submissions)
+        print("counter: " + str(counter))
 
-        if counter % 1000 == 0: # to track progress for big pulls
+        if counter % 100 == 0: # to track progress for big pulls
             k += 1
             print(counter*k) # number of posts that have been recorded
 
@@ -90,6 +110,8 @@ def get_submissions(subreddit, after, before, max_submissions = 200000000):
             json.dump(obj, f, ensure_ascii = False)
             f.write('\n')
 
+
+    latest_end = before
 
     return # empty return - saved file
 

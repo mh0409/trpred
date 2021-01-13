@@ -31,7 +31,7 @@ def clean_comments(raw_comments):
     keep_cols = ['id', 'created_utc','author',\
                   'author_flair_text', 'score', 'parent_id',\
                   'link_id', 'subreddit']
-    keep_cols_text = ['id', 'created_utc', 'link_id', 'body']
+    keep_cols_text = ['id', 'created_utc', 'link_id', 'body', 'subreddit']
 
     # Create file name
     processedfile_csv = "data/processed/comments/metadata/" + new_file + \
@@ -70,11 +70,14 @@ def clean_comments(raw_comments):
         try:
             df_keep_text = df_keep_text.append(data[keep_cols_text])
         except KeyError:
-            keep_cols_text = ['id', 'created_utc', 'author', 'link_id' 'body']
+            keep_cols_text = ['id', 'created_utc', 'author', 'link_id' 'body', 'subreddit']
             df_keep_text = df_keep_text.append(data[keep_cols_text])
 
         # Make sure there's at least 1 observation
         observations = len(df_keep.index)
+
+        # Add column designating the type of item it is -- either submission or comment
+        df_keep['type'] = 'comment'
 
         # If there are no observations, move to next subreddit
         if observations == 0:
@@ -104,6 +107,10 @@ def clean_comments(raw_comments):
         df_keep = df_keep.loc[mask]
         df_keep_text = df_keep_text.loc[mask_text]
         ############################
+
+        df_keep = df_keep.replace('\n', ' ',regex=True)
+        df_keep_text = df_keep_text.replace('\n', ' ',regex=True)
+
 
         # Save to csv
         if counter == 1:
@@ -135,7 +142,7 @@ def clean_submissions(raw_submissions):
     keep_cols = ['id', 'created_utc', 'author', 'title',\
                   'score', 'num_comments', 'subreddit', 'author_flair_text']
 
-    keep_cols_text = ['id', 'created_utc', 'author', 'selftext']
+    keep_cols_text = ['id', 'created_utc', 'author', 'selftext', 'subreddit']
 
     # Create file name
     processedfile_csv = "data/processed/submissions/metadata/" + new_file + \
@@ -171,11 +178,14 @@ def clean_submissions(raw_submissions):
             try:
                 df_keep_text = i.loc[:, keep_cols_text]
             except KeyError:
-                keep_cols_text = ['id', 'created_utc', 'author']
+                keep_cols_text = ['id', 'created_utc', 'author', 'selftext', 'subreddit']
                 df_keep_text = i.loc[:, keep_cols_text]
 
             # Make sure there's at least 1 observation
             observations = len(df_keep.index)
+
+            # Add column designating the type of item it is -- either submission or comment
+            df_keep['type'] = 'submission'
 
             # If there are no observations, move to next subreddit
             if observations == 0:
@@ -206,16 +216,27 @@ def clean_submissions(raw_submissions):
             df_keep_text = df_keep_text.loc[mask_text]
             ############################
 
-            ## Not formatting to date time now since can parse it when reading in the file
+            # Regex out newlines
+            df_keep = df_keep.replace('\n', ' ',regex=True)
+            df_keep_text = df_keep_text.replace('\n', ' ',regex=True)
 
+            try:
+                df_keep_text = df_keep_text.replace('\s{2,}', ' ',regex=True)
+            except:
+                continue
+
+            # try:
+            #     print(df_keep_text.selftext.iloc[94])
+            # except:
+            #     print("No items.")
 
             if counter == 1:
-                df_keep.to_csv(processedfile_csv, mode = "w", index=False)
-                df_keep_text.to_csv(processed_textfile_csv, mode = "w", index=False)
+                df_keep.to_csv(processedfile_csv, mode = "w", index=False, quoting = csv.QUOTE_NONNUMERIC)
+                df_keep_text.to_csv(processed_textfile_csv, mode = "w", index=False, quoting = csv.QUOTE_NONNUMERIC)
 
             else:
-                df_keep.to_csv(processedfile_csv, mode = "a", header = False, index=False)
-                df_keep_text.to_csv(processed_textfile_csv, mode = "a", header = False, index=False)
+                df_keep.to_csv(processedfile_csv, mode = "a", header = False, index=False, quoting = csv.QUOTE_NONNUMERIC)
+                df_keep_text.to_csv(processed_textfile_csv, mode = "a", header = False, index=False, quoting = csv.QUOTE_NONNUMERIC)
 
 
 if __name__ == "__main__":

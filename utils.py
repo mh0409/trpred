@@ -34,11 +34,8 @@ def create_folder(raw_file, file_type):
 
     return path
 
-
-
 def describe_file(f, s, c):
     print("file: {0}, size: {1}, count: {2}".format(f, s, c))
-
 
 def chunk_file(folder_path):
         '''Split large files into 15MB chunks in identically-named folder.
@@ -58,7 +55,7 @@ def chunk_file(folder_path):
             fs.split(callback = describe_file)
 
 def get_filename(file_path):
-    regex = r"([^\/]+)(?=\.$)" # set regex to get file names
+    regex = r"([^\/]+)(?=\.[a-zA-z]*$)" # set regex to get file names
     matches = re.search(regex, file_path)
     filename = matches.group()
 
@@ -204,13 +201,12 @@ def get_subreddit_from_filename(file_path):
 
 def get_authors(file_type):
     # Load in one example
-    file_ls = glob("data/processed/metadata/" + str(file_type) "/*metadata.csv")
+    file_ls = glob("data/processed/metadata/" + str(file_type) + "/*metadata.csv")
     file_ls = list(dict.fromkeys(file_ls))
 
     df_all_authors = pd.DataFrame(columns=['author', 'subreddit', 'num_items'])
 
     df_all_unique_users  = pd.DataFrame(columns=['subreddit', 'num_unique_users'])
-
 
     for i in file_ls:
         # Load in file; only interested in author and subreddit columns
@@ -235,11 +231,10 @@ def get_authors(file_type):
 
         return df_all_authors
 
-
 def get_unique_users(file_type):
 
     # Load in files
-    file_ls = glob("data/processed/metadata/" + str(file_type) "/*metadata.csv")
+    file_ls = glob("data/processed/metadata/" + str(file_type) + "/*metadata.csv")
     file_ls = list(dict.fromkeys(file_ls))
 
     for i in file_ls:
@@ -295,7 +290,6 @@ def get_descriptions():
     # Save to file
     today = dt.datetime.strftime(dt.datetime.now(), "%Y%m%d")
     df_descriptions.to_csv("data/info/"+today+"_subreddit_descriptions.csv")
-
 
 def get_trp_flair():
     file_ls = ["data/processed/comments/TheRedPill-metadata.csv", "data/processed/submissions/TheRedPill-allsubmissions-2020-05-16-metadata.csv"]
