@@ -1,6 +1,4 @@
 # trp.red
-
- ** *TO BE UPDATED* **
  
 For use with Turing trp.red project. Code written in python, except for network creation which was done in R.
 
