@@ -68,6 +68,60 @@ trpred (git folder)
 			* A csv file where one row is one comment and a column is a field of interest for that comment
 
 ## utils.py
-* TBU
+* **create_folder(raw_file, file_type)**:
+	* Used in the clean_comments() method to split up huuuuge comment files before actually cleaning them
+	
+* **chunk_file(folder_path)**:
+	* Splits large files into 15MB chunks to ease processing
 
-# TBC...
+* **describe_file(f, s, c)**:
+	* Prints out file size
+
+* **get_filename(file_path)**:
+	* Uses regex to get file name (i.e. everything after last "/")
+
+* **get_startdate()**:
+	* Get the decided-upon start date of our period of interest (Oct. 25, 2012)
+
+* **get_enddate()**:
+	* Get the decided-upon end date of our period of interest (Sept. 01, 2018)
+
+* **get_subreddits()**:
+	* Get the list of all decided-upon subreddits of interest 
+
+* **file_len(fname)**:
+	* Get the number of comments/submissions in a file (i.e. the number of rows)
+
+* **count_processedentries(data_type)**:
+	* Get the number of all comments/submissions; essentially, `file_len` for all subreddits at once
+
+* **dedupe(filename)**:
+	* Remove all duplicate entries; can be used for both comments and submissions
+
+* **get_submissions_aggs(subreddit_names)**:
+	* Get aggregate counts for all submissions
+	* Makes a request to Pushshift API
+
+* **get_comments_aggs(subreddit_names)**:
+	* Get aggregate counts for all comments
+	* Makes a request to Pushshift API
+
+* **get_subreddit_from_filename(file_path)**:
+	* Regex the subreddit name from the file path
+
+* **get_authors(file_type)**:
+	* Get all of the authors from either the submissions / comments for each subreddits
+
+* **get_unique_users(file_type)**:
+	* Get number of distinct users by each subreddit
+
+* **get_descriptions()**:
+	* Get the subreddit description for each subreddit
+	* Makes a request to Pushshift API
+
+* **get_trp_flair()**:
+	* Get user flair for TRP users
+
+# Addendum
+
+Please raise any issues if found! Happy to answer any questions.
